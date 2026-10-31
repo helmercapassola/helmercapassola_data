@@ -207,8 +207,8 @@ function FloatingDataSvg() {
         <rect x="12" y="198" width="176" height="104" rx="12" fill="url(#data-node-gradient)" />
         <rect x="37" y="216" width="30" height="30" rx="8" fill="#e2efe7" />
         <path d="M45 223h14m-14 6h14m-14 6h9" stroke="#397158" strokeWidth="1.8" strokeLinecap="round" />
-        <text x="77" y="229" className="svg-label">DATA SOURCES</text>
-        <text x="37" y="274" className="svg-caption">SQL · APIs · Files</text>
+        <text x="100" y="229" textAnchor="middle" className="svg-label">DATA SOURCES</text>
+        <text x="100" y="274" textAnchor="middle" className="svg-caption">SQL · APIs · Files</text>
         <circle cx="153" cy="219" r="3" fill="#59a27b" />
       </g>
       <g className="data-flow-node data-node-stream" filter="url(#data-soft-shadow)">
@@ -237,7 +237,7 @@ function FloatingDataSvg() {
       </g>
       <g className="data-flow-node data-node-insight" filter="url(#data-soft-shadow)">
         <rect x="438" y="304" width="210" height="104" rx="12" fill="url(#data-node-gradient)" />
-        <text x="475" y="330" className="svg-label">BUSINESS INSIGHTS</text>
+        <text x="543" y="337" textAnchor="middle" className="svg-label">BUSINESS INSIGHTS</text>
         <path d="M460 383v-24m27 24v-38m27 38v-19m27 19v-31m27 31v-45m27 45v-26" stroke="#579574" strokeWidth="7" strokeLinecap="round" />
         <path d="M455 389h176" stroke="#c7d8cb" strokeWidth="1" />
         <circle cx="631" cy="325" r="3" fill="#59a27b" />
