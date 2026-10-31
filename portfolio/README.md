@@ -19,6 +19,19 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Deploy to Cloudflare Pages
+
+Configure the Cloudflare Pages project with:
+
+- **Root directory:** `portfolio`
+- **Build command:** `npm run build`
+- **Build output directory:** `build`
+
+The app uses relative asset paths, so the production build works at the domain
+root, including `https://helmercapassola.pages.dev/`. It uses in-page anchor
+navigation rather than a client-side router, so no additional SPA rewrite rules
+are required.
+
 ## Other commands
 
 ```bash
