@@ -172,14 +172,14 @@ function FloatingDataSvg() {
       </defs>
       <rect width="680" height="500" fill="url(#data-grid)" opacity=".55" />
       <g fill="none" stroke="#54896b" strokeOpacity=".78" strokeWidth="2.5" markerEnd="url(#flow-arrow)">
-        <path className="data-flow-path data-flow-path-one" d="M188 250C205 250 198 144 218 144" />
+        <path className="data-flow-path data-flow-path-one" d="M210 250C219 250 198 144 218 144" />
         <path className="data-flow-path data-flow-path-two" d="M307 196V304" />
         <path className="data-flow-path data-flow-path-three" d="M396 356C420 356 422 144 458 144" />
         <path className="data-flow-path data-flow-path-four" d="M553 196V304" />
       </g>
       <g className="data-flow-packets">
         <circle className="data-flow-packet packet-one" r="5">
-          <animateMotion dur="2.8s" repeatCount="indefinite" path="M188 250C205 250 198 144 218 144" />
+          <animateMotion dur="2.8s" repeatCount="indefinite" path="M210 250C219 250 198 144 218 144" />
         </circle>
         <circle className="data-flow-packet packet-two" r="4">
           <animateMotion dur="2.8s" begin="-1.4s" repeatCount="indefinite" path="M307 196V304" />
@@ -191,7 +191,7 @@ function FloatingDataSvg() {
           <animateMotion dur="2.8s" begin="-0.6s" repeatCount="indefinite" path="M553 196V304" />
         </circle>
         <circle className="data-flow-packet packet-one" r="3">
-          <animateMotion dur="3.2s" begin="-1.6s" repeatCount="indefinite" path="M188 250C205 250 198 144 218 144" />
+          <animateMotion dur="3.2s" begin="-1.6s" repeatCount="indefinite" path="M210 250C219 250 198 144 218 144" />
         </circle>
         <circle className="data-flow-packet packet-two" r="3">
           <animateMotion dur="3.2s" begin="-0.8s" repeatCount="indefinite" path="M307 196V304" />
@@ -204,12 +204,12 @@ function FloatingDataSvg() {
         </circle>
       </g>
       <g className="data-flow-node data-node-source" filter="url(#data-soft-shadow)">
-        <rect x="12" y="198" width="176" height="104" rx="12" fill="url(#data-node-gradient)" />
-        <rect x="37" y="216" width="30" height="30" rx="8" fill="#e2efe7" />
-        <path d="M45 223h14m-14 6h14m-14 6h9" stroke="#397158" strokeWidth="1.8" strokeLinecap="round" />
-        <text x="100" y="229" textAnchor="middle" className="svg-label">DATA SOURCES</text>
-        <text x="100" y="274" textAnchor="middle" className="svg-caption">SQL · APIs · Files</text>
-        <circle cx="153" cy="219" r="3" fill="#59a27b" />
+        <rect x="12" y="198" width="198" height="104" rx="12" fill="url(#data-node-gradient)" />
+        <rect x="24" y="216" width="30" height="30" rx="8" fill="#e2efe7" />
+        <path d="M32 223h14m-14 6h14m-14 6h9" stroke="#397158" strokeWidth="1.8" strokeLinecap="round" />
+        <text x="66" y="229" className="svg-label">DATA SOURCES</text>
+        <text x="111" y="274" textAnchor="middle" className="svg-caption">SQL · APIs · Files</text>
+        <circle cx="193" cy="219" r="3" fill="#59a27b" />
       </g>
       <g className="data-flow-node data-node-stream" filter="url(#data-soft-shadow)">
         <rect x="218" y="92" width="178" height="104" rx="12" fill="url(#data-node-gradient)" />
