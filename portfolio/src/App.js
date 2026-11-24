@@ -469,34 +469,109 @@ function ToolIcon({ name, type }) {
 
 function App() {
   const [repoStats, setRepoStats] = useState({ status: 'loading', count: null });
+  const [githubProjects, setGithubProjects] = useState([]);
+  const [currentProjectPage, setCurrentProjectPage] = useState(0);
+  const projectsPerPage = 4;
 
   useEffect(() => {
-    const controller = new AbortController();
+    let active = true;
+    let controller = null;
 
-    fetch('https://api.github.com/users/helmercapassola', {
-      headers: { Accept: 'application/vnd.github+json' },
-      signal: controller.signal,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`GitHub API request failed with status ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((profile) => {
-        if (!Number.isInteger(profile.public_repos) || profile.public_repos < 0) {
-          throw new Error('GitHub API returned an invalid repository count');
-        }
-        setRepoStats({ status: 'success', count: profile.public_repos });
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') {
-          setRepoStats({ status: 'error', count: null });
-        }
-      });
+    const loadGitHubData = () => {
+      controller?.abort();
+      controller = new AbortController();
 
-    return () => controller.abort();
+      Promise.all([
+        fetch('https://api.github.com/users/helmercapassola', {
+          headers: { Accept: 'application/vnd.github+json' },
+          signal: controller.signal,
+        }),
+        fetch('https://api.github.com/users/helmercapassola/repos?type=owner&sort=updated&per_page=100', {
+          headers: { Accept: 'application/vnd.github+json' },
+          signal: controller.signal,
+        }),
+      ])
+        .then(async ([profileResponse, repositoriesResponse]) => {
+          if (!profileResponse.ok || !repositoriesResponse.ok) {
+            throw new Error('GitHub API request failed');
+          }
+
+          const [profile, repositories] = await Promise.all([
+            profileResponse.json(),
+            repositoriesResponse.json(),
+          ]);
+
+          if (!Number.isInteger(profile.public_repos) || profile.public_repos < 0) {
+            throw new Error('GitHub API returned an invalid repository count');
+          }
+
+          if (active) {
+            setRepoStats({ status: 'success', count: profile.public_repos });
+
+            if (!Array.isArray(repositories)) {
+              return;
+            }
+
+            const visibleRepositories = repositories.filter((repository) => !repository.fork);
+            const visualTypes = ['streaming', 'etl', 'lakehouse', 'research'];
+
+            setGithubProjects(
+              visibleRepositories.map((repository, index) => {
+                const topics = Array.isArray(repository.topics) ? repository.topics.slice(0, 4) : [];
+                const technologies = [repository.language, ...topics].filter(Boolean);
+
+                return {
+                  number: String(index + 1).padStart(2, '0'),
+                  category: (repository.language || 'GITHUB REPOSITORY').toUpperCase(),
+                  title: repository.name,
+                  description: repository.description || 'Public GitHub repository maintained by Helmer Capassola.',
+                  technologies: technologies.length ? technologies : ['GitHub'],
+                  href: repository.html_url,
+                  visual: visualTypes[index % visualTypes.length],
+                  status: repository.archived ? 'Archived repository' : null,
+                };
+              })
+            );
+          }
+        })
+        .catch((error) => {
+          if (active && error.name !== 'AbortError') {
+            setRepoStats((previous) => (
+              previous.status === 'success'
+                ? previous
+                : { status: 'error', count: null }
+            ));
+          }
+        });
+    };
+
+    loadGitHubData();
+    const refreshInterval = window.setInterval(loadGitHubData, 10 * 60 * 1000);
+    const refreshOnFocus = () => loadGitHubData();
+    window.addEventListener('focus', refreshOnFocus);
+
+    return () => {
+      active = false;
+      controller?.abort();
+      window.clearInterval(refreshInterval);
+      window.removeEventListener('focus', refreshOnFocus);
+    };
   }, []);
+
+  const displayedProjects = githubProjects.length ? githubProjects : projects;
+  const projectPageCount = Math.ceil(displayedProjects.length / projectsPerPage);
+  const visibleProjects = displayedProjects.slice(
+    currentProjectPage * projectsPerPage,
+    (currentProjectPage + 1) * projectsPerPage
+  );
+
+  const changeProjectPage = (nextPage) => {
+    setCurrentProjectPage(nextPage);
+    const projectsSection = document.getElementById('projects');
+    if (typeof projectsSection?.scrollIntoView === 'function') {
+      projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <div className="portfolio">
@@ -622,7 +697,7 @@ function App() {
             </a>
 
             <div className="projects-grid">
-              {projects.map((project) => (
+              {visibleProjects.map((project) => (
                 <article className="project-card" key={project.number}>
                   <ProjectVisual type={project.visual} />
                   <div className="project-content">
@@ -645,6 +720,30 @@ function App() {
                 </article>
               ))}
             </div>
+
+            {projectPageCount > 1 && (
+              <div className="projects-pagination" aria-label="Projects pagination">
+                <button
+                  type="button"
+                  className="projects-page-button"
+                  onClick={() => changeProjectPage(currentProjectPage - 1)}
+                  disabled={currentProjectPage === 0}
+                >
+                  <span aria-hidden="true">←</span> Previous
+                </button>
+                <span className="projects-page-status" aria-live="polite">
+                  Page {currentProjectPage + 1} of {projectPageCount}
+                </span>
+                <button
+                  type="button"
+                  className="projects-page-button projects-next-button"
+                  onClick={() => changeProjectPage(currentProjectPage + 1)}
+                  disabled={currentProjectPage >= projectPageCount - 1}
+                >
+                  Next <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            )}
           </div>
         </section>
 

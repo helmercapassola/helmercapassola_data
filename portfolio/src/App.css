@@ -600,6 +600,43 @@
   gap: 18px;
 }
 
+.projects-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid #35443e;
+}
+
+.projects-page-button {
+  min-width: 112px;
+  min-height: 44px;
+  border: 1px solid #708c7c;
+  border-radius: 4px;
+  background: transparent;
+  color: #f4f6f3;
+  font: 700 13px 'DM Sans', 'Segoe UI', sans-serif;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, opacity 180ms ease;
+}
+
+.projects-page-button:not(:disabled):hover {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+.projects-page-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.projects-page-status {
+  color: #a6b0aa;
+  font-size: 13px;
+}
+
 .project-card {
   overflow: hidden;
   border: 1px solid #35443e;

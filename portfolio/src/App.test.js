@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
 
 beforeEach(() => {
@@ -82,4 +82,39 @@ test('does not render profile images', async () => {
 
   expect(container.querySelector('img')).not.toBeInTheDocument();
   expect(await screen.findByText('59')).toBeInTheDocument();
+});
+
+test('loads GitHub repositories and paginates in groups of four', async () => {
+  const repositories = Array.from({ length: 6 }, (_, index) => ({
+    name: `Repository ${index + 1}`,
+    description: `Description ${index + 1}`,
+    html_url: `https://github.com/helmercapassola/repository-${index + 1}`,
+    language: 'Python',
+    topics: ['data'],
+    fork: false,
+    archived: false,
+  }));
+
+  global.fetch.mockImplementation((url) => Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve(
+      url.includes('/repos?')
+        ? repositories
+        : { public_repos: 6 }
+    ),
+  }));
+
+  render(<App />);
+
+  expect(await screen.findByRole('heading', { name: 'Repository 1' })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Repository 4' })).toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: 'Repository 5' })).not.toBeInTheDocument();
+  expect(screen.getByText('Page 1 of 2')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('button', { name: /Next/ }));
+
+  expect(await screen.findByRole('heading', { name: 'Repository 5' })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Repository 6' })).toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: 'Repository 1' })).not.toBeInTheDocument();
+  expect(screen.getByText('Page 2 of 2')).toBeInTheDocument();
 });
